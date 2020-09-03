@@ -9,7 +9,7 @@ object KConsumer {
 
   def main(args: Array[String]): Unit = {
     val props = new ju.Properties
-    props.put("group.id", "grp2")
+    props.put("group.id", "grp3")
     props.put("bootstrap.servers", KConfig.address)
     props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
     props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
@@ -20,8 +20,10 @@ object KConsumer {
     
     try {
       consumer.subscribe(List(KConfig.topicName).asJava)
-      while(true) {
-        val records = consumer.poll(10)
+      var iter = 0
+      while(iter < 10) {
+        iter += 1
+        val records = consumer.poll(100)
         for (record <- records.asScala) {
           println("Topic: " + record.topic() + 
                ",Key: " + record.key() +  

@@ -18,15 +18,19 @@ object KProducer {
     props.put("acks","all")
 
     val producer = new KafkaProducer[String, String](props)
-    val record = new ProducerRecord[String, String](KConfig.topicName, "key", "value")
 
     try {
-      val metadata = producer.send(record).get
-      println(s"Sent record ${metadata.topic()} :: ${metadata.partition()} :: ${metadata.offset()}")
+      for (i <- 1 to 3) {
+        val record = new ProducerRecord[String, String](KConfig.topicName, s"key${i}", s"value${i}")
+        val metadata = producer.send(record).get
+        println(s"Sent record ${metadata.topic()} :: ${metadata.partition()} :: ${metadata.offset()}")
+      }
     } catch {
       case e: Exception => e.printStackTrace()
     } finally {
+      println("closing")
       producer.close()
+      println("CLOSED")
     }
   }
 }
